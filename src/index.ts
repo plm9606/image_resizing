@@ -23,7 +23,7 @@ export const resize = async (event, context, callback) => {
   const fileType: string = fileName.split(".").pop();
 
   if (!supportImageTypes.includes(fileType)) {
-    console.error(`invalid Image Type::key:${key}`);
+    callback(`invalid Image Type::key:${key}`);
   }
   try {
     const image = await s3.getObject({ Bucket, Key: key }).promise();
