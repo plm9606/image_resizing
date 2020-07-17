@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
+    "target": "ES2017",
+    "outDir": ".build",
+    "module": "commonjs",
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "rootDir": ".",
+    "lib": ["DOM"]
+  },
+  "include": ["src/**/*.ts", "serverless/**/*.ts", "sls-common/**/*.ts"],
+  "exclude": ["node_modules"]
+}
