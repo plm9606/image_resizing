@@ -16,16 +16,22 @@ provider:
   region: ap-northeast-2
 
 you can add statements to the Lambda function's IAM Role here
- iamRoleStatements:
-   - Effect: "Allow"
-     Action:
-       - "s3:ListBucket"
-     Resource: "arn:aws:s3:::image-resizing-test-nbbangdev/images/*"
-   - Effect: "Allow"
-     Action:
-       - "s3:PutObject"
-     Resource: "arn:aws:s3:::image-resizing-test-nbbangdev/*"
-
+iamRoleStatements:
+  - Effect: "Allow"
+    Action:
+      - "s3:ListBucket"
+    Resource: "arn:aws:s3:::image-resizing-test-nbbangdev/images/*"
+  - Effect: "Allow"
+    Action:
+      - "s3:PutObject"
+    Resource: "arn:aws:s3:::image-resizing-test-nbbangdev/*"
+   - Effect: Allow
+                  Action:
+                    - ec2:CreateNetworkInterface
+                    - ec2:DescribeNetworkInterfaces
+                    - ec2:DetachNetworkInterface
+                    - ec2:DeleteNetworkInterface
+                  Resource: "*"
 # you can define service wide environment variables here
 #  environment:
 #    variable1: value1
