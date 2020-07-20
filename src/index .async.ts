@@ -1,4 +1,4 @@
-import { S3 } from "aws-sdk";
+import { S3, AWSError } from "aws-sdk";
 const sharp = require("sharp");
 const s3 = new S3({ region: "ap-northeast-2", signatureVersion: "v4" });
 const Bucket = "image-resizing-test-nbbangdev";
@@ -14,17 +14,35 @@ const supportImageTypes: string[] = [
   "gif",
   "webp",
   "svg",
+  "tiff",
 ];
 
-export const resize = async (event, context, callback) => {
+export const resize = async (event) => {
   const key: string = event.Records[0].s3.object.key;
   const fileName: string = key.split("/").pop();
   const fileType: string = fileName.split(".").pop();
 
-  if (!supportImageTypes.includes(fileType)) {
-    callback(`invalid Image Type::key:${key}`);
-    return;
-  }
+  const promise = new Promise((res, rej) => {
+    if (!supportImageTypes.includes(fileType)) {
+      rej(Error(`invalid Image Type::key:${key}`));
+    }
+    res(s3.getObject({ Bucket, Key: key }));
+  }).then((image: S3.GetObjectOutput) => {
+    transforms.map(async (item) => {
+      const resizedImg: Buffer = await sharp(image.Body)
+        .resize({ width: item.width })
+        .toBuffer();
+
+      return await s3
+        .putObject({
+          Bucket,
+          Body: resizedImg,
+          Key: `resize/${item.name}/${fileName}`,
+        })
+        .promise();
+    });
+  });
+
   try {
     const image = await s3.getObject({ Bucket, Key: key }).promise();
 

@@ -1,0 +1,116 @@
+AWSTemplateFormatVersion: 2010-09-09
+Metadata:
+  "AWS::CloudFormation::Designer":
+    f14e41d6-bb0f-4025-b702-bb97cba5dc30:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 248
+        "y": 100
+      z: 0
+      embeds: []
+    6c392fa4-329b-470d-b3a3-f01b1d218a74:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 400
+        "y": 170
+      z: 0
+      embeds: []
+      isassociatedwith:
+        - f14e41d6-bb0f-4025-b702-bb97cba5dc30
+    7fb2b11e-4be5-48da-b74d-46bfaaa16601:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 260
+        "y": 250
+      z: 0
+      embeds: []
+    a4d0247c-dd81-4fce-aacd-40c762921d23:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 380
+        "y": 250
+      z: 0
+      embeds: []
+    e3102d10-f079-48bd-a2fc-0fe8e69fb442:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 180
+        "y": 170
+      z: 0
+      embeds: []
+    184e12e0-fece-432a-a08e-98591b07efe6:
+      size:
+        width: 60
+        height: 60
+      position:
+        x: 380
+        "y": 270
+      z: 0
+Resources:
+  ImageResizeBucket:
+    Type: "AWS::S3::Bucket"
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      BucketName: aram-image-resize
+    Metadata:
+      "AWS::CloudFormation::Designer":
+        id: f14e41d6-bb0f-4025-b702-bb97cba5dc30
+  ImageBucketPolicy:
+    Type: "AWS::S3::BucketPolicy"
+    Properties:
+      Bucket:
+        Ref: ImageResizeBucket
+      PolicyDocument:
+        Statement:
+          - Sid: ReadAndWrite
+            Effect: Allow
+            Principal: "*"
+            Action:
+              - "s3:GetObject"
+              - "s3:PutObject"
+            Resource: !Join
+              - ""
+              - - "arn:aws:s3:::"
+                - !Ref ImageResizeBucket
+    Metadata:
+      "AWS::CloudFormation::Designer":
+        id: 6c392fa4-329b-470d-b3a3-f01b1d218a74
+  ResizeFunction:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      FunctionName: aram-image-resize
+      Code:
+        S3Bucket: image-resizing-test-nbbangdev
+        S3Key: !Sub /lambda/resize.zip
+      Handler: .build/src/index.resize
+      Runtime: nodejs12.x
+      Role: !GetAtt LambdaRole
+    Metadata:
+      "AWS::CloudFormation::Designer":
+        id: 7fb2b11e-4be5-48da-b74d-46bfaaa16601
+    DependsOn: []
+  ResizeEvent:
+    Type: "AWS::Lambda::EventSourceMapping"
+    Properties: {}
+    Metadata:
+      "AWS::CloudFormation::Designer":
+        id: e3102d10-f079-48bd-a2fc-0fe8e69fb442
+  LP39OSM:
+    Type: "AWS::Lambda::Permission"
+    Properties: {}
+    Metadata:
+      "AWS::CloudFormation::Designer":
+        id: 184e12e0-fece-432a-a08e-98591b07efe6

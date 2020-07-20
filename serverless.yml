@@ -15,42 +15,30 @@ provider:
   #  stage: dev
   region: ap-northeast-2
 
-# you can add statements to the Lambda function's IAM Role here
-#  iamRoleStatements:
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:ListBucket"
-#      Resource: { "Fn::Join" : ["", ["arn:aws:s3:::", { "Ref" : "ServerlessDeploymentBucket" } ] ]  }
-#    - Effect: "Allow"
-#      Action:
-#        - "s3:PutObject"
-#      Resource:
-#        Fn::Join:
-#          - ""
-#          - - "arn:aws:s3:::"
-#            - "Ref" : "ServerlessDeploymentBucket"
-#            - "/*"
+you can add statements to the Lambda function's IAM Role here
+ iamRoleStatements:
+   - Effect: "Allow"
+     Action:
+       - "s3:ListBucket"
+     Resource: "arn:aws:s3:::image-resizing-test-nbbangdev/images/*"
+   - Effect: "Allow"
+     Action:
+       - "s3:PutObject"
+     Resource: "arn:aws:s3:::image-resizing-test-nbbangdev/*"
 
 # you can define service wide environment variables here
 #  environment:
 #    variable1: value1
-
-# you can add packaging information here
-#package:
-#  include:
-#    - include-me.js
-#    - include-me-dir/**
-#  exclude:
-#    - exclude-me.js
-#    - exclude-me-dir/**
-
 functions:
   resize:
     handler: .build/src/index.resize
     events:
-      - http:
-          path: resize
-          method: get
+      - s3:
+        bucket: image-resizing-test-nbbangdev
+        event: s3:ObjectCreated:*
+        rules:
+          - prefix: images/
+        existing: true
 package:
   exclude:
     - src/*
