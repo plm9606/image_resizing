@@ -26,6 +26,7 @@ provider:
 #        - "s3:PutObject"
 #      Resource: "arn:aws:s3:::image-resizing-test-nbbangdev/*"
 # you can define service wide environment variables here
+
 #  environment:
 #    variable1: value1
 functions:
